@@ -14,7 +14,8 @@ void test_bst_normal()
 {
     bst_t* p_bst = NULL;
     status_t status = SUCCESS;
-    data_t data[] = {100, 50, 150, 25, 75, 125, 200, 65, 130};
+    //data_t data[] = {100, 50, 150, 25, 75, 125, 200, 65, 130};
+    data_t data[] = {100, 50, 25, 75, 150, 200, 65, 130, 125};
     data_t nonexistent_data[] = {-200, 34, 68, 98, 0xaaab, 0xf0f0f0};
     data_t succ_data, pred_data;
     
@@ -30,11 +31,12 @@ void test_bst_normal()
     }
 
     preorder(p_bst);
-    //preorder_nrc(p_bst);
     inorder(p_bst);
-    //inorder_nrc(p_bst);
     postorder(p_bst);
-    //postorder_nrc(p_bst);
+    
+    preorder_nrc(p_bst);
+    inorder_nrc(p_bst);
+    postorder_nrc(p_bst);
 
     for(index = 0; index < sizeof(data)/sizeof(data[0]); ++index)
     {
@@ -231,7 +233,10 @@ status_t search_bst(bst_t* p_bst, data_t search_data)
     bst_node_t* run = NULL;
     run = search_nodelevel(p_bst->p_root_node, search_data);
 
-    return (run != NULL);
+    if (run != NULL)
+        return SUCCESS;
+
+    return FALSE;
 }
 
 status_t remove_bst(bst_t* p_bst, data_t r_data)
@@ -339,8 +344,10 @@ void postorder(bst_t* p_bst)
 }
 
 // Preorder predessor and successor
-status_t preorder_predecessor(bst_t* p_bst, data_t existing_data, data_t* p_pred_data){return 1;}
-status_t preorder_successor(bst_t* p_bst, data_t exisitng_dataq, data_t p_succ_data){return 1;}
+status_t preorder_predecessor(bst_t* p_bst, data_t existing_data, data_t* p_pred_data)
+{return TRUE;}
+status_t preorder_successor(bst_t* p_bst, data_t exisitng_dataq, data_t p_succ_data)
+{return TRUE;}
 
 // Inorder predecessor and successor
 status_t inorder_predecessor(bst_t* p_bst, data_t existing_data, data_t* p_pred_data)
@@ -379,8 +386,8 @@ status_t inorder_successor(bst_t* p_bst, data_t existing_data, data_t* p_succ_da
 }
 
 // Postorder predessor and successor
-status_t postorder_predecessor(bst_t* p_bst, data_t exisitng_data, data_t* p_pred_data){return 1;}
-status_t postorder_successor(bst_t* p_bst, data_t existing_data, data_t* p_succ_data){return 1;}
+status_t postorder_predecessor(bst_t* p_bst, data_t exisitng_data, data_t* p_pred_data){return TRUE;}
+status_t postorder_successor(bst_t* p_bst, data_t existing_data, data_t* p_succ_data){return TRUE;}
 
 status_t max_bst(bst_t* p_bst, data_t* p_max_data)
 {
@@ -539,7 +546,9 @@ status_t pop_bstptr_end(bstptr_list_t* p_bstptr_list, bst_node_t** pp_bst_node)
 
 status_t is_bstptr_list_empty(bstptr_list_t* p_bstptr_list)
 {
-    return (p_bstptr_list -> prev == p_bstptr_list && p_bstptr_list -> next == p_bstptr_list);
+    if (p_bstptr_list -> prev == p_bstptr_list && p_bstptr_list -> next == p_bstptr_list)
+        return LIST_EMPTY;
+    return FALSE;
 }
 
 status_t destroy_bstptr_list(bstptr_list_t** pp_list)
@@ -591,7 +600,7 @@ void preorder_nrc(bst_t* p_bst)
 
     run = p_bst -> p_root_node;
 
-    printf("[START]->");
+    printf("PREORDER_NRC: [START]->");
     while(TRUE)
     {
         while(run != NULL)
@@ -620,7 +629,7 @@ void inorder_nrc(bst_t* p_bst)
 
     run = p_bst -> p_root_node;
 
-    printf("[START]->");
+    printf("INORDER_NRC: [START]->");
     while(TRUE)
     {
         while(run != NULL)
@@ -650,7 +659,7 @@ void postorder_nrc(bst_t* p_bst)
 
     run = p_bst -> p_root_node;
 
-    printf("[START]->");
+    printf("POSTORDER_NRC: [START]->");
     while(TRUE)
     {
         while(run != NULL)
@@ -842,12 +851,13 @@ bstptr_node_t* getbstptr_node(bst_node_t* p_bst_node)
 {
     bstptr_node_t* new_node = NULL;
     new_node = (bstptr_node_t*)xmalloc(sizeof(bstptr_node_t));
-    new_node -> p_bst_node = NULL;
+    new_node -> p_bst_node = p_bst_node;
     new_node -> color = WHITE;
     new_node -> prev = NULL;
     new_node -> next = NULL;
-    return NULL;
+    return new_node;
 }
+
 void* xmalloc(size_t size)
 {
     void* ptr = NULL;

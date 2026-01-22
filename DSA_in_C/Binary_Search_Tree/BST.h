@@ -20,9 +20,10 @@ enum status{
     BST_NO_POSTORDER_PREDECESSOR=   -7,
     BST_NO_POSTORDER_SUCCESSOR  =   -8,
     LIST_EMPTY                  =   -9,
-    STACK_EMPTY                 =   LIST_EMPTY,
-    QUEUE_EMPTY                 =   LIST_EMPTY
+    STACK_EMPTY                 =   -9,
+    QUEUE_EMPTY                 =   -9
 };
+
 enum color
 {
     WHITE                       =   0,
